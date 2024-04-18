@@ -12,12 +12,4 @@
 
 #include "so_long.h"
 
-/*char	**ft_parse(char doc)
-{
-	int	id;
 
-	id = open(doc, O_RDONLY);
-	if (id == -1)
-		ft_perror();
-	ft_line();
-}*/

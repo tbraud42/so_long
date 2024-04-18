@@ -3,14 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbraud <tbraud@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tao <tao@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 18:19:33 by tbraud            #+#    #+#             */
-/*   Updated: 2024/04/17 21:15:42 by tbraud           ###   ########.fr       */
+/*   Updated: 2024/04/18 03:02:34 by tao              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
+
+void	ft_free(char **map)
+{
+	int	i;
+
+	i = 0;
+	while (map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map);
+}
 
 char	**ft_first_tab(char *argv[])
 {
@@ -30,12 +43,82 @@ char	**ft_first_tab(char *argv[])
 		j++;
 		free(tmp);
 	}
-	if (j < 3)// taille minimum pour une map
+	if (j > 3)// taille minimum pour une map
+	{
+		map = malloc(sizeof(char *) * j + 1);
+		map[j] = NULL;
+		if (map)
+			return (map);// initialisation ??? 
+	}
+	close(fd);
+	ft_perror();
+}
+
+void	ft_put_map(char *argv[], char **map)
+{
+	int	fd;
+	int	i;
+	
+	fd = open(argv[1], O_RDONLY);
+	if (fd == -1)
+	{
+		free(map);
 		ft_perror();
-	map = malloc(sizeof(char *) * j + 1);
-	if (!map)
+	}
+	i = 0;
+	while (tab[i])
+	{
+		tmp = get_next_line(fd);
+		if (!tmp)
+			break ;
+		tab[i] = tmp;
+		i++;
+		free(tmp);
+	}
+}
+/* test rectqngulaire, espace entre  */
+void	ft_test_rectangle(char **map)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = ft_strlen(map[0])
+	while (map[i] && ft_strlen(map[0]) == j)
+		i++;
+	if (map[i]) // cas map pas rectangle
+	{
 		ft_perror();
-	return (map); // initialisation ??? 
+	}
+}
+
+void	ft_test_block(char **map, int size)
+{
+	int	i;
+	int	j;
+	int x;
+
+	i = 0;
+	x = ft_strlen(map[0]);
+	while(map[i])
+	{
+		j = 0;
+		while(map[i][j])
+		{
+			if ((i == 0 || i == size) && map[i][j] != '1')
+				break ;
+			if ((j == 0 || j == x - 1) && map[i][j] != '1')
+				break ;
+			if (map[i][j] != '0' && map[i][j] != '1' && map[i][j] != 'C' && map[i][j] != 'E' && map[i][j] != 'P')
+				break ; 
+			j++;
+		}
+		i++;
+	}
+	if (i == size + 1)
+		return ;
+	ft_free(map);
+	ft_error();
 }
 
 char	**ft_creat_map(char *argv[])
@@ -45,7 +128,8 @@ char	**ft_creat_map(char *argv[])
 
 	map = ft_first_map(argv); // determine la taille du tableau de pointeur
 	ft_put_map(argv, map);    // remplie le tableau de pointeur avec gnl
-	ft_test_map(map);
+	ft_test_rectangle(map);
+	ft_test_block(map);
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
 		ft_perror(); // erreur d'ouverture (pas le droit a access)

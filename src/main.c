@@ -6,11 +6,23 @@
 /*   By: tao <tao@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 18:19:33 by tbraud            #+#    #+#             */
-/*   Updated: 2024/04/18 03:02:34 by tao              ###   ########.fr       */
+/*   Updated: 2024/04/18 03:56:31 by tao              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
+
+int	ft_strlen(char *arr)
+{
+	int	i;
+
+	if (!arr)
+		return (0);
+	i = 0;
+	while (arr[i])
+		i++;
+	return (i);
+}
 
 void	ft_free(char **map)
 {
@@ -46,7 +58,7 @@ char	**ft_first_tab(char *argv[])
 	if (j > 3)// taille minimum pour une map
 	{
 		map = malloc(sizeof(char *) * j + 1);
-		map[j] = NULL;
+		map[j] = NULL;// nan
 		if (map)
 			return (map);// initialisation ??? 
 	}
@@ -54,7 +66,7 @@ char	**ft_first_tab(char *argv[])
 	ft_perror();
 }
 
-void	ft_put_map(char *argv[], char **map)
+int	ft_put_map(char *argv[], char **map)
 {
 	int	fd;
 	int	i;
@@ -75,8 +87,9 @@ void	ft_put_map(char *argv[], char **map)
 		i++;
 		free(tmp);
 	}
+	return (i);
 }
-/* test rectqngulaire, espace entre  */
+
 void	ft_test_rectangle(char **map)
 {
 	int	i;
@@ -86,10 +99,10 @@ void	ft_test_rectangle(char **map)
 	j = ft_strlen(map[0])
 	while (map[i] && ft_strlen(map[0]) == j)
 		i++;
-	if (map[i]) // cas map pas rectangle
-	{
-		ft_perror();
-	}
+	if (!map[i])
+		return ;
+	ft_free(map);
+	ft_error();
 }
 
 void	ft_test_block(char **map, int size)
@@ -124,15 +137,12 @@ void	ft_test_block(char **map, int size)
 char	**ft_creat_map(char *argv[])
 {
 	char	**map;
-	int		fd;
+	int		i;
 
-	map = ft_first_map(argv); // determine la taille du tableau de pointeur
-	ft_put_map(argv, map);    // remplie le tableau de pointeur avec gnl
+	map = ft_first_map(argv);
+	i = ft_put_map(argv, map);
 	ft_test_rectangle(map);
-	ft_test_block(map);
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		ft_perror(); // erreur d'ouverture (pas le droit a access)
+	ft_test_block(map, i);
 }
 
 int	main(int argc, char *argv[])

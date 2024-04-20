@@ -1,42 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_error.c                                         :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbraud <tbraud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/09 18:37:39 by tbraud            #+#    #+#             */
-/*   Updated: 2024/04/20 05:40:45 by tbraud           ###   ########.fr       */
+/*   Created: 2024/04/18 21:07:13 by tbraud            #+#    #+#             */
+/*   Updated: 2024/04/19 05:19:39 by tbraud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-void	ft_perror(void)
+int	ft_strlen(char *arr)
 {
-	write(2, "Error\n", 7);
-	perror(0);
-}
+	int i;
 
-void	ft_error(char *erno, int choice, char **map)
-{
-	if (choice == 1)
-		ft_free(map);
-	write(2, "Error\n", 7);
-	if (erno)
-		write(2, erno, ft_strlen(erno));
-	exit(EXIT_FAILURE);
-}
-
-void	ft_free(char **map)
-{
-	int	i;
-
+	if (!arr)
+		return (0);
 	i = 0;
-	while (map[i])
-	{
-		free(map[i]);
+	while (arr[i])
 		i++;
-	}
-	free(map);
+	return (i);
 }

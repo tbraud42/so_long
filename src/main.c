@@ -3,154 +3,85 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tao <tao@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: tbraud <tbraud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 18:19:33 by tbraud            #+#    #+#             */
-/*   Updated: 2024/04/18 03:56:31 by tao              ###   ########.fr       */
+/*   Updated: 2024/04/20 17:46:02 by tbraud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-int	ft_strlen(char *arr)
-{
-	int	i;
-
-	if (!arr)
-		return (0);
-	i = 0;
-	while (arr[i])
-		i++;
-	return (i);
-}
-
-void	ft_free(char **map)
+void	pri(char **map)
 {
 	int	i;
 
 	i = 0;
 	while (map[i])
 	{
-		free(map[i]);
+		printf("%s\n", map[i]);
 		i++;
 	}
-	free(map);
+}
+void	*ft_choose_img(char block, void *mlx)
+{
+	int	i[2];
+
+	if (block == '1')
+		return (mlx_xpm_file_to_image(mlx, "./sprite/first_sprite.xpm", &i[0],
+				&i[1]));
+	else if (block == 'o')
+		return (mlx_xpm_file_to_image(mlx, "./sprite/pixil-frame-0.xpm", &i[0],
+				&i[1]));
+	else if (block == 'c')
+		return (mlx_xpm_file_to_image(mlx, "./sprite/pixil-frame-1.xpm", &i[0],
+				&i[1]));
+	else if (block == 'P')
+		return (mlx_xpm_file_to_image(mlx, "./sprite/pixil-frame-1.xpm", &i[0],
+				&i[1]));
+	else if (block == 'e')
+		return (mlx_xpm_file_to_image(mlx, "./sprite/pixil-frame-1.xpm", &i[0],
+				&i[1]));
+	return (0);
 }
 
-char	**ft_first_tab(char *argv[])
+void	ft_insert_map(char **map, void *mlx, void *mlx_win)
 {
-	int		fd;
-	int		j;
-	char	**map;
-	char	*tmp;
+	int	x;
+	int	y;
 
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		ft_perror();
-	while (1)
+	y = 0;
+	while (map[y])
 	{
-		tmp = get_next_line(fd);
-		if (!tmp)
-			break ;
-		j++;
-		free(tmp);
-	}
-	if (j > 3)// taille minimum pour une map
-	{
-		map = malloc(sizeof(char *) * j + 1);
-		map[j] = NULL;// nan
-		if (map)
-			return (map);// initialisation ??? 
-	}
-	close(fd);
-	ft_perror();
-}
-
-int	ft_put_map(char *argv[], char **map)
-{
-	int	fd;
-	int	i;
-	
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-	{
-		free(map);
-		ft_perror();
-	}
-	i = 0;
-	while (tab[i])
-	{
-		tmp = get_next_line(fd);
-		if (!tmp)
-			break ;
-		tab[i] = tmp;
-		i++;
-		free(tmp);
-	}
-	return (i);
-}
-
-void	ft_test_rectangle(char **map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = ft_strlen(map[0])
-	while (map[i] && ft_strlen(map[0]) == j)
-		i++;
-	if (!map[i])
-		return ;
-	ft_free(map);
-	ft_error();
-}
-
-void	ft_test_block(char **map, int size)
-{
-	int	i;
-	int	j;
-	int x;
-
-	i = 0;
-	x = ft_strlen(map[0]);
-	while(map[i])
-	{
-		j = 0;
-		while(map[i][j])
+		x = 0;
+		while (map[y][x])
 		{
-			if ((i == 0 || i == size) && map[i][j] != '1')
-				break ;
-			if ((j == 0 || j == x - 1) && map[i][j] != '1')
-				break ;
-			if (map[i][j] != '0' && map[i][j] != '1' && map[i][j] != 'C' && map[i][j] != 'E' && map[i][j] != 'P')
-				break ; 
-			j++;
+			mlx_put_image_to_window(mlx, mlx_win, ft_choose_img(map[y][x], mlx),
+				x * 32, y * 32);
+			x++;
 		}
-		i++;
+		y++;
 	}
-	if (i == size + 1)
-		return ;
-	ft_free(map);
-	ft_error();
 }
-
-char	**ft_creat_map(char *argv[])
-{
-	char	**map;
-	int		i;
-
-	map = ft_first_map(argv);
-	i = ft_put_map(argv, map);
-	ft_test_rectangle(map);
-	ft_test_block(map, i);
-}
-
+/*a chaque pas juste tu test les x et y et tu ecrase l'autre image,
+	et tu met l'image du 0 derriere sauf si on est sur E*/
+/*comprendre les evenements*/
 int	main(int argc, char *argv[])
 {
-	char **tab;
-	// void	*mlx;
+	char **map;
+	size_t size_map;
+	void *mlx;
+	void *mlx_win;
+	int i[2];
 
-	if (argc == 0 || !argv[1]) // erreur ou pas pour le second cas ?
-		return (0);
-	tab = ft_creat_map(argv);
+	if (argc == 0 || !argv[1])
+		ft_error("wrong input\n", 0, 0);
+	map = ft_creat_map(argv, &size_map);
+	pri(map);
+	mlx = mlx_init();
+	mlx_win = mlx_new_window(mlx, (ft_strlen(map[0])) * 32, size_map * 32,
+			"so_long<3");
+	ft_insert_map(map, mlx, mlx_win);
+	mlx_loop(mlx);
+	ft_free(map);
 }

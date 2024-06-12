@@ -6,7 +6,7 @@
 #    By: tbraud <tbraud@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/31 18:10:28 by tbraud            #+#    #+#              #
-#    Updated: 2024/04/19 05:24:38 by tbraud           ###   ########.fr        #
+#    Updated: 2024/04/22 04:56:52 by tbraud           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ CFLAGS	:= -Wextra -Wall -Werror
 INCLUDE	:= -I ./include
 
 SRC		:= main.c get_next_line.c get_next_line_utils.c ft_utils.c ft_error.c \
-		ft_parse.c ft_parse_two.c
+		ft_parse.c ft_parse_two.c ft_move.c
 OBJ		:= $(SRC:%.c=$(OBJ_DIR)/%.o)
 
 GREEN	:= \033[1;32m

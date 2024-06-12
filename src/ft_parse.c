@@ -6,7 +6,7 @@
 /*   By: tbraud <tbraud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 17:46:27 by tbraud            #+#    #+#             */
-/*   Updated: 2024/04/20 05:57:07 by tbraud           ###   ########.fr       */
+/*   Updated: 2024/04/23 18:49:56 by tbraud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ static void	ft_put_map(char *argv[], char **map, int size)
 		tmp = get_next_line(fd);
 		if (!tmp)
 			break ;
-		tmp[ft_strlen(tmp) - 1] = '\0';
+		if (tmp[ft_strlen(tmp) - 1] == '\n')
+			tmp[ft_strlen(tmp) - 1] = '\0';
 		map[i] = tmp;
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: tbraud <tbraud@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 05:18:39 by tbraud            #+#    #+#             */
-/*   Updated: 2024/04/20 05:38:28 by tbraud           ###   ########.fr       */
+/*   Updated: 2024/04/24 20:14:11 by tbraud           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,67 @@ void	ft_check_duplicates(char **map)
 	}
 	if (point_e != 1 || point_p != 1)
 		ft_error("wrong map given\n", 1, map);
+}
+
+static void	*ft_choose_img(char block, t_ptr *ptr)
+{
+	if (block == '1')
+		return (ptr->img[0]);
+	else if (block == 'o' || block == '0')
+		return (ptr->img[1]);
+	else if (block == 'c')
+		return (ptr->img[2]);
+	else if (block == 'P')
+		return (ptr->img[3]);
+	else if (block == 'e')
+		return (ptr->img[4]);
+	return (0);
+}
+
+static void	ft_parse_img(t_ptr *ptr)
+{
+	int	i[2];
+	int	j;
+
+	ptr->img[0] = mlx_xpm_file_to_image(ptr->mlx, "sprite/wall.xpm", &i[0],
+			&i[1]);
+	ptr->img[1] = mlx_xpm_file_to_image(ptr->mlx, "sprite/floor.xpm", &i[0],
+			&i[1]);
+	ptr->img[2] = mlx_xpm_file_to_image(ptr->mlx, "sprite/item.xpm", &i[0],
+			&i[1]);
+	ptr->img[3] = mlx_xpm_file_to_image(ptr->mlx, "sprite/player.xpm", &i[0],
+			&i[1]);
+	ptr->img[4] = mlx_xpm_file_to_image(ptr->mlx, "sprite/c_door.xpm", &i[0],
+			&i[1]);
+	ptr->img[5] = mlx_xpm_file_to_image(ptr->mlx, "sprite/o_door.xpm", &i[0],
+			&i[1]);
+	ptr->img[6] = mlx_xpm_file_to_image(ptr->mlx, "sprite/player_door.xpm",
+			&i[0], &i[1]);
+	ptr->img[7] = mlx_xpm_file_to_image(ptr->mlx, "sprite/player_floor.xpm",
+			&i[0], &i[1]);
+	j = 0;
+	while (j < 8 && ptr->img[j])
+		j++;
+	if (j != 8)
+		ft_exit_mlx(ptr, 1);
+}
+
+void	ft_insert_map(t_ptr *ptr)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+	ft_parse_img(ptr);
+	while (ptr->map[y])
+	{
+		x = 0;
+		while (ptr->map[y][x])
+		{
+			mlx_put_image_to_window(ptr->mlx, ptr->mlx_win,
+				ft_choose_img(ptr->map[y][x], ptr), x * 32, y * 32);
+			x++;
+		}
+		y++;
+	}
 }
